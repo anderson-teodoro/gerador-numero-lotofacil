@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Lotofacil</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/heroic-features.css" rel="stylesheet">
+
+
+  <style>
+
+    .tamanhoCampos{
+      width: 70px;
+      margin-left: 20px;
+    }
+
+    .tamanhoFonts{
+      font-size: 15px;
+      font-style: italic;
+      margin-left: 25px;
+    }
+
+    .numerais{
+      border-radius: 100px;
+      background: yellow;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+      font-size: 28px;
+      padding: 10px;     
+    }
+
+    h1{
+      background-color: black;
+      color: white;
+      text-align: center;
+   }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Lotofacil</a>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container">
+    <form>
+    <!-- Jumbotron Header -->
+    <header>
+      <div class="row" style="background-color: aquamarine;">       
+        <div class="form-group">
+          <label for="quantidade" class="tamanhoFonts">Qtd Jogos:</label>
+          <input maxlength="4" type="text" class="form-control" id="quantidade" onkeypress="return somenteNumeros(event)" style="width:70px; margin-left: 20px;">
+        </div>
+
+        <div class="form-group">
+          <label for="numerosIgnorados" class="tamanhoFonts">Numeros Ignorados:</label>
+          <input type="text" class="form-control" id="numerosIgnorados" style="width:150px; margin-left: 20px;">
+          <span style="margin-left: 20px;"><b>Ex: 1,2,4,6...</b></span>
+        </div>
+   
+ 
+        <div style="margin-top:32px; margin-left: 50px;">
+          <!-- <a class="btn btn-warning" onclick="SucessoAll()" style="color: white;">sucesso</a>
+          <a class="btn btn-warning" onclick="LimparAll()">Limpar</a> -->
+
+          <a class="btn btn-warning" onclick="SucessoAll()" style="font-style: oblique;"><b>Gerar Jogos</b></a>         
+          <button type="submit" class="btn btn-warning" onclick="LimparAll()" style="font-style: oblique;"><b>Limpar Jogos</b></button>
+        </div>
+      </div>
+      <div class="text-right">
+        <p><b>Responsáveis :</b><b><span style="color: red;font-size: 22px;"> Anderson</span></b></p>
+      </div>
+    </form>
+      <hr/>
+
+    </header>
+
+
+   <div class="alert alert-warning" id="alerta" role="alert" style="display: none;">
+    <strong>Qtd Jogos!</strong> é obrigatório o preenchimento e deverá ser maior que 0.
+  </div>
+
+    <!-- Page Features -->
+    <div class="row text-center">
+      <div class="col-md-12">
+        <div id="tabela" class="col-md-12">      
+        </div>    
+      </div>
+    </div>
+    <!-- /.row -->
+
+  </div>
+
+
+  <script>
+       var lista = []; 
+       var quantidade_de_jogos;
+       var numeros_ignorados;
+
+       var jogos = [];
+
+        function gerarNumero(existentes) {
+            var novoNumero = parseInt(Math.random() * 25, 10) + 1;
+            if (existentes.indexOf(novoNumero) != -1 || numeros_ignorados.indexOf(novoNumero) != -1) novoNumero = gerarNumero(existentes);
+            return novoNumero;
+        }
+
+        function chaveExistente(chave) {
+            var chaves = jogos.map(function (chv) {
+                return chv.join();
+            });
+            return chaves.indexOf(chave.join()) != -1;
+        }
+
+      //  function ArrayStringForArrayInt(numeros_ignorados)
+      //  {
+      //       var array = [];
+      //       var str = [];
+      //       str = numeros_ignorados
+      //       var size = str.length;
+
+      //       for(var i=0; i< size; i++)
+      //       {
+      //         array[i] = parseInt(str[i]);
+      //       }
+
+      //      return array;
+      //      console.log(array)
+      //  }
+
+
+       function Gerador(){
+
+        quantidade_de_jogos = $("#quantidade").val();
+        numeros_ignorados = ($("#numerosIgnorados").val());
+
+        // if(numeros_ignorados != "")        
+        // numeros_ignorados = ArrayStringForArrayInt(numeros_ignorados)
+        // console.log(numeros_ignorados);
+
+        
+        if(quantidade_de_jogos < 1 || quantidade_de_jogos == ""){
+           $("#alerta").css('display','block');
+
+           $().ready(function() {
+              setTimeout(function () {
+                $('#alerta').hide(); 
+              }, 2500); 
+            });
+
+           return false;
+         }
+
+
+        for (var i = 0; i < quantidade_de_jogos; i++) 
+        {
+            var numeros = [];
+            while (numeros.length < 15) {
+                numeros.push(gerarNumero(numeros));
+            }
+            numeros.sort(function(a,b){return a -b; }); 
+            chaveExistente(numeros) ? quantidade_de_jogos++ : jogos.push(numeros);
+
+            var retorno = FormatarNumeros(numeros,lista);
+        }
+        $("#tabela").html(retorno);
+       }
+  
+
+       function FormatarNumeros(a,lista)
+       {   
+         var vlA = "0";
+         var vlB = "";
+         var str = "<div>"; 
+            for(var i=0; i <= a.length - 1; i++)
+            {    
+            if(a[i] >=1 && a[i] <= 9)
+            {
+                a[i] = vlA.concat(a[i]);
+            }
+                str += "<scan class='numerais'>"           
+                str += a[i];
+                str += "</scan>";  
+            }
+           str += "</div><br>";
+           lista.push(str);
+           return lista;
+       }
+
+       function SucessoAll()
+       {
+            Gerador();
+       }
+    </script>
+ 
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+ 
+</body>
+</html>
+
